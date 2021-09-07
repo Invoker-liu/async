@@ -2,6 +2,7 @@ package com.invoker.async.web;
 
 import com.invoker.async.service.AsyncService;
 import com.invoker.async.service.UserHolder;
+import com.invoker.async.util.DecryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ public class AsyncController {
 
     public void async() {
         UserHolder.set("Invoker");
+        DecryptUtil.fileDe();
         this.asyncService.asyncWithTraceAndThreadLocal();
     }
 

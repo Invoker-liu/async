@@ -14,8 +14,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.alibaba.ttl.threadpool.TtlExecutors.getTtlExecutorService;
-
 /**
  * 2021/9/1-9:39 上午
  *
@@ -45,6 +43,13 @@ public class AsyncHelper implements InitializingBean {
                          .collect(Collectors.toList());
         CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join();
         return futures.stream().map(CompletableFuture::join).collect(Collectors.toList());
+    }
+
+    public static void asyncRun(List<Runnable> runners) {
+        CompletableFuture.allOf(runners.stream()
+                                       .map(r -> CompletableFuture.runAsync(r,
+                                                                            TRACEABLE_EXECUTOR_SERVICE))
+                                       .toArray(CompletableFuture<?>[]::new)).join();
     }
 
 
