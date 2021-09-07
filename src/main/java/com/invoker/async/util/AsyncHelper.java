@@ -9,6 +9,7 @@ import org.springframework.cloud.sleuth.instrument.async.TraceableExecutorServic
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
@@ -40,6 +41,7 @@ public class AsyncHelper implements InitializingBean {
         List<CompletableFuture<T>> futures =
                 suppliers.stream()
                          .map(supplier -> CompletableFuture.supplyAsync(supplier, TRACEABLE_EXECUTOR_SERVICE))
+                         .filter(Objects::nonNull)
                          .collect(Collectors.toList());
         CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join();
         return futures.stream().map(CompletableFuture::join).collect(Collectors.toList());
